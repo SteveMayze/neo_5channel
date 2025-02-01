@@ -1,0 +1,47 @@
+# For PCBs designed using KiCad: http://www.kicad-pcb.org/
+
+# Temporary files
+*.000
+*.bak
+*.bck
+*.kicad_pcb-bak
+*~
+_autosave-*
+*.tmp
+
+# Netlist files (exported from Eeschema)
+*.net
+
+# Autorouter files (exported from Pcbnew)
+*.dsn
+*.ses
+
+# Exported BOM files
+*.xml
+*.csv
+
+# Firmware
+
+**/Debug
+
+**/.DS_Store
+
+firmware/**/Release/
+**/.vs
+
+*.code-workspace
+
+*.bkp
+.generated_files
+
+*-backups/
+build/
+rescue-backup/
+dist/
+
+**/release/
+
+backup-firmware
+
+**/gerbers
+**/archive
