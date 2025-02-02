@@ -8,8 +8,8 @@
 #include "stdlib.h"
 #include "time.h"
 #include <avr/io.h>
-#include "neopixel.h"
-#include "neopixel_anim.h"
+#include <neopixel.h>
+#include <neopixel_anim.h>
 
 /*! The setting for the CLKCTRL.MCLKCTRLB register */
 #define _MAIN_CLOCK 0x00
