@@ -11,9 +11,33 @@
 
 
 
+ /*!
+ * \brief Pixel/Star status bits
+ */
+typedef union {
+	struct {
+		unsigned char active:1;
+		unsigned char ramp_up:1;
+		unsigned char not_used:6;
+	} status_bits;
+	unsigned char status;
+} state_t;
+
+ /*!
+  * \brief The neopixel_anim_start_t structure defines the life and behavior of a "star". 
+  * The pixel information maps the actual pixel and its colour information. The stars 
+  * holds the status bits for whether the star is active and if it is in ramp_up mode 
+  * i.e. increasing in intensity.
+  */
+ typedef struct {
+	/*! The pixel being referenced. This contains the actual LED reference and the colour information. */
+	pixel_type pixel;
+	state_t state;
+ } neopixel_anim_star_t;
 
 
-#ifdef _NEO_RAIN
+ neopixel_anim_star_t star_buffer[MAX_BUFFERS][MAX_STARS];
+
 /*!
  * \brief	Creates an effect of a droplet getting heavy and then falling.
  */
@@ -58,36 +82,6 @@ void neo_anim_commet(void){
 	}
 }
 
-#endif
-
-#ifdef _NEOPIXEL_ANIM_CHANNEL
-
-/*!
- * \brief Pixel/Star status bits
- */
-typedef union {
-	struct {
-		unsigned char active:1;
-		unsigned char ramp_up:1;
-		unsigned char not_used:6;
-	} status_bits;
-	unsigned char status;
-} state_t;
-
- /*!
-  * \brief The neopixel_anim_start_t structure defines the life and behavior of a "star". 
-  * The pixel information maps the actual pixel and its colour information. The stars 
-  * holds the status bits for whether the star is active and if it is in ramp_up mode 
-  * i.e. increasing in intensity.
-  */
- typedef struct {
-	/*! The pixel being referenced. This contains the actual LED reference and the colour information. */
-	pixel_type pixel;
-	state_t state;
- } neopixel_anim_star_t;
-
-
- neopixel_anim_star_t star_buffer[MAX_BUFFERS][MAX_STARS];
 
   void neo_anim_clear(uint8_t buff) {
 	  for ( uint8_t star_idx = 0; star_idx < MAX_STARS; star_idx++) {
@@ -154,18 +148,6 @@ typedef union {
 			if ( star_buffer[buff_idx][star_idx].pixel.red == 0x00 && star_buffer[buff_idx][star_idx].pixel.green == 0x00 && star_buffer[buff_idx][star_idx].pixel.blue == 0x00) {
 				star_buffer[buff_idx][star_idx].state.status_bits.active = false;
 
-// 				toss = rand() % 3;
-// 				switch( toss ){
-// 					case 0:
-// 					star_buffer[buff_idx][star_idx].pixel.red = rand_colour();
-// 					break;
-// 					case 1:
-// 					star_buffer[buff_idx][star_idx].pixel.green = rand_colour();
-// 					break;
-// 					case 2:
-// 					star_buffer[buff_idx][star_idx].pixel.blue = rand_colour();
-// 					break;
-// 				}
 			}
 		}
 	}
@@ -211,11 +193,6 @@ typedef union {
  }
 
  
-
-#endif
-
-
-#ifdef _NEO_BASIC_ANIMS
 void barber_pole(bool direction){
 
 	uint8_t c1[] = { 0x04, 0x00, 0x00 };
@@ -868,76 +845,4 @@ void neopixel_anim_rainbow_wipe(uint8_t strip[], uint8_t hue, bool direction, in
 
 	}
 }
-
-
-#endif
-
-
-#ifdef NEO_ANIM_BASIC_STARS
-#define MAX_STARS 10
-
-pixel_type star_buffer[MAX_BUFFERS][MAX_STARS]; 
-
-/*!
- * \brief	Lights up a random number of "stars" MAX_STARS and increases their
- * brightness until FF for the given colour is reached and then reduces the
- * intensity.
- */
-void neo_anim_stars() {
-	// Fill the buffers with each of their star allotments.
-
-	// for (int i=0; i < 150; i++) {
-		neopixel_fill(buffer[0], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
-		neopixel_fill(buffer[1], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
-		neopixel_fill(buffer[2], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
-		neopixel_fill(buffer[3], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
-		neopixel_fill(buffer[4], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
-
-		// int buf_count = rand() % MAX_BUFFERS;
-		int star_count = rand() % MAX_STARS;
-		for (int buff = 0; buff < MAX_BUFFERS; buff++){
-			for(int star_idx =0; star_idx < MAX_STARS; star_idx++){
-				if ( star_idx < star_count+1){
-					star_buffer[buff][star_idx].pix = rand() % NEOPIXELS_SIZE;
-					star_buffer[buff][star_idx].red = rand() % 0x0A;
-					star_buffer[buff][star_idx].green = rand() % 0x0A;
-					star_buffer[buff][star_idx].blue = rand() % 0x0A;
-				} else {
-					star_buffer[buff][star_idx].pix = 0xFF;
-				}
-			}
-		}
-		neopixel_setchannel(0b00011111);
-		neopixel_show(buffer[0]);
-
-		for (int i = 0; i < 50; i++ ) {
-			for (int buff =0; buff < MAX_BUFFERS; buff++) {
-				uint8_t channel = 0b00000001 << buff;
-				neopixel_setchannel(channel);
-				for( int star_idx = 0; star_idx < MAX_STARS; star_idx++){
-					if( star_buffer[buff][star_idx].pix < 0xFF) {					
-						neopixel_incPixelHue(buffer[buff], star_buffer[buff][star_idx] );
-						neopixel_show(buffer[buff]);
-					}
-				}
-			}
-			delay_ms(50);
-		}
-		delay_ms(150);
-		for( int i = 0; i < 51; i++ ) {
-			for (int buff =0; buff< MAX_BUFFERS; buff++) {
-				uint8_t channel = 0b00000001 << buff;
-				neopixel_setchannel(channel);
-				for( int star_idx = 0; star_idx < MAX_STARS; star_idx++){
-					if( star_buffer[buff]->pix < 0xFF){					
-						neopixel_decrPixelHue(buffer[buff], star_buffer[buff][star_idx]);
-						neopixel_show(buffer[buff]);
-					}
-				}
-			}
-			delay_ms(50);
-		}
-	// }
-}
-#endif
 

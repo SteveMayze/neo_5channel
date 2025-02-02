@@ -19,9 +19,6 @@
 #define NEO_ANIM_CYCLES 100 // NEO_HUE_ADJ * 5
 #define NEO_ANIM_MAX_GRADIENT 100
 
-#define _NEO_RAIN
-#define _NEOPIXEL_ANIM_CHANNEL
-
 
 uint8_t buffer[MAX_BUFFERS][neopixel_buffer_size];
 
