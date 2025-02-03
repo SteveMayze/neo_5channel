@@ -9,6 +9,11 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "TreeLights_5Channel", "Tree
 	EndProjectSection
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "neo_5c_lib", "..\neo_5c_lib\neo_5c_lib.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B1ED6DED-FCDD-4F92-AAE7-04694C442CE1} = {B1ED6DED-FCDD-4F92-AAE7-04694C442CE1}
+	EndProjectSection
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ws2812_lib", "..\..\..\..\ws2812_lib\ws2812_lib.cproj", "{B1ED6DED-FCDD-4F92-AAE7-04694C442CE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +29,10 @@ Global
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|AVR.Build.0 = Debug|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.ActiveCfg = Release|AVR
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|AVR.Build.0 = Release|AVR
+		{B1ED6DED-FCDD-4F92-AAE7-04694C442CE1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{B1ED6DED-FCDD-4F92-AAE7-04694C442CE1}.Debug|AVR.Build.0 = Debug|AVR
+		{B1ED6DED-FCDD-4F92-AAE7-04694C442CE1}.Release|AVR.ActiveCfg = Release|AVR
+		{B1ED6DED-FCDD-4F92-AAE7-04694C442CE1}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

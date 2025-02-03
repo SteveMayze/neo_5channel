@@ -99,12 +99,14 @@
     <ListValues>
       <Value>libm</Value>
       <Value>libneo_5c_lib.a</Value>
+      <Value>libws2812_lib.a</Value>
     </ListValues>
   </avrgcc.linker.libraries.Libraries>
   <avrgcc.linker.libraries.LibrarySearchPaths>
     <ListValues>
       <Value>D:\pcbs\neo\5c\firmware\NeoStrip5Channel\Neo_5c_Lib\neo_5c_lib\Debug</Value>
       <Value>D:\pcbs\neo\5c\firmware\NeoStrip5Channel\neo_5c_lib\Debug</Value>
+      <Value>D:\pcbs\neo\ws2812_lib\Debug</Value>
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
   <avrgcc.assembler.general.IncludePaths>
@@ -139,6 +141,7 @@
       <Value>%24(PackRepoDir)\atmel\ATtiny_DFP\2.0.368\include\</Value>
       <Value>%24(PackRepoDir)\Atmel\ATtiny_DFP\2.0.368\include\</Value>
       <Value>../../neo_5c_lib</Value>
+      <Value>../../../../../ws2812_lib</Value>
     </ListValues>
   </avrgcc.compiler.directories.IncludePaths>
   <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
@@ -149,12 +152,14 @@
     <ListValues>
       <Value>libm</Value>
       <Value>libneo_5c_lib.a</Value>
+      <Value>libws2812_lib.a</Value>
     </ListValues>
   </avrgcc.linker.libraries.Libraries>
   <avrgcc.linker.libraries.LibrarySearchPaths>
     <ListValues>
       <Value>D:\pcbs\neo\5c\firmware\NeoStrip5Channel\Neo_5c_Lib\neo_5c_lib\Debug</Value>
       <Value>D:\pcbs\neo\5c\firmware\NeoStrip5Channel\neo_5c_lib\Debug</Value>
+      <Value>D:\pcbs\neo\ws2812_lib\Debug</Value>
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
   <avrgcc.assembler.general.IncludePaths>

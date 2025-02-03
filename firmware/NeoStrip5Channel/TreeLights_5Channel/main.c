@@ -9,10 +9,6 @@
 #include "time.h"
 #include <avr/io.h>
 
-
-
-
-#include <neopixel.h>
 #include <neopixel_anim.h>
 
 /*! The setting for the CLKCTRL.MCLKCTRLB register */

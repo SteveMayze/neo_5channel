@@ -10,6 +10,7 @@
 #define NEOPIXEL_ANIM_H_
 
 #include <stdbool.h>
+#include <neopixel.h>
 
 #define BASE_HUE ((uint8_t) 0x03)
 #define MED_HUE  ((uint8_t) 0x06)
