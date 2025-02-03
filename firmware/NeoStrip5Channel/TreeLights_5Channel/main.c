@@ -39,30 +39,34 @@ int main(void)
 
 	neopixel_init();
 	srand(time(NULL));
-	uint16_t cycle = 0;
-	uint16_t cycle_limit = rand() % 1000;
-	cycle_limit = (cycle_limit < 100? 100: cycle_limit);
-	while(true){
 
-		if ( cycle > cycle_limit ) {
-			cycle = 0;
-			cycle_limit = rand() % 1000;
-			cycle_limit = ( cycle_limit < 100? 100: cycle_limit);
-
-			delay_ms(1000);
-			neo_anim_commet();
-			delay_ms(1000);
+	bool ramp_down = false;
+	bool still_active = true;
+	int anim_cycles = 0;
+	while(true) {
+		int cycle = 0;
+		for(int buff_idx = 0; buff_idx < MAX_BUFFERS; buff_idx++) {
+			neo_anim_clear(buff_idx);
 		}
-
-		for ( int buff_idx = 0; buff_idx < MAX_BUFFERS;  buff_idx++) {
-			neo_anim_stars(buffer[buff_idx], buff_idx);
+		anim_cycles = (rand() % (NEO_ANIM_MAX_CYCLES - NEO_ANIM_MIN_CYCLES + 1)) + NEO_ANIM_MIN_CYCLES;
+		while(still_active) {
+			bool strip_active = false;
+			for(int buff_idx = 0; buff_idx < MAX_BUFFERS; buff_idx++) {
+				strip_active |= neo_anim_stars(buff_idx, ramp_down);
+			}
+			uint16_t gradient = rand() % NEO_ANIM_MAX_GRADIENT;
+			gradient = gradient < 2? 2: gradient;
+			delay_ms(gradient);
+			still_active = strip_active;
+			cycle++;
+			if(cycle > anim_cycles){
+				ramp_down = true;
+			}
 		}
-		//delay_ms(1000);
-		uint8_t gradient = rand() % NEO_ANIM_MAX_GRADIENT;
-		gradient = gradient < 2? 2: gradient;
-		delay_ms(gradient);
-		cycle++;
-
+		neo_anim_comet();
+		delay_ms(3000);
+		ramp_down = false;
+		still_active = true;
 	}
 	return 0;
 }
@@ -73,7 +77,7 @@ int main(void)
 int main(void)
 {
 	while( true ) {
-		neo_anim_commet();
+		neo_anim_comet();
 		delay_ms(3000);
 	}
 	return 0;

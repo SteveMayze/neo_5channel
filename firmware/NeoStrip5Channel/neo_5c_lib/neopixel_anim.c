@@ -41,7 +41,7 @@ typedef union {
 /*!
  * \brief	Creates an effect of a droplet getting heavy and then falling.
  */
-void neo_anim_commet(void){
+void _neo_anim_comet(void){
 
 	neopixel_fill(buffer[0], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
 	neopixel_setchannel((uint8_t)0b00011111);
@@ -78,6 +78,46 @@ void neo_anim_commet(void){
 		delay_ms(15);
 		if (j > NEOPIXELS_SIZE - 6 ) {
 		 	neopixel_setPixel(buffer[0], 0, NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
+		}
+	}
+}
+
+void neo_anim_comet(void){
+
+	// Since the comet will on a random set of strips, they can be controlled
+	// in parallel so we don't need to fill each buffer.
+	neopixel_fill(buffer[0], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
+	neopixel_setchannel((uint8_t)0b00011111);
+	neopixel_show(buffer[0]);
+
+	// Pick a channel, any channel
+	int channel  = rand();
+	channel %= 0b00011111;
+	uint8_t channel_mask = channel+1;
+	neopixel_setchannel(channel_mask);
+
+	neopixel_fill(buffer[0], NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
+	neopixel_show(buffer[0]);
+
+	// Set the pixel 0 to White and let the droplet gather some weight
+	// neopixel_setchannel(channel_mask);
+	uint8_t hue = HI_HUE;
+	uint8_t hue_decr = HI_HUE / COMMET_SIZE;
+	for (uint8_t i = 0; i < COMMET_SIZE; i++){
+		neopixel_setPixel(buffer[0], 0, hue, hue, hue);
+		neopixel_show(buffer[0]);
+		delay_ms(30);
+		neopixel_shift(buffer[0], true);
+		hue = hue - hue_decr;
+	}
+
+	// Now let the pixels _fall_
+	for(int j=0; j < NEOPIXELS_SIZE; j++){
+		neopixel_show(buffer[0]);
+		neopixel_shift(buffer[0], true);
+		delay_ms(30);
+		if (j > NEOPIXELS_SIZE - COMMET_SIZE*2 ) {
+			neopixel_setPixel(buffer[0], 0, NEO_ALL_OFF, NEO_ALL_OFF, NEO_ALL_OFF);
 		}
 	}
 }
@@ -133,7 +173,7 @@ void neo_anim_commet(void){
  * brightness until FF for the given colour is reached and then reduces the
  * intensity.
  */
- void neo_anim_stars(uint8_t strip[], uint8_t buff_idx) {
+ void _neo_anim_stars(uint8_t strip[], uint8_t buff_idx) {
 	uint8_t channel = 0b00000001 << buff_idx;
 // 	uint8_t toss;
 	for ( uint8_t star_idx = 0; star_idx < MAX_STARS; star_idx++) {
@@ -173,6 +213,52 @@ void neo_anim_commet(void){
 			neopixel_show(strip);
 		}
 	}
+ }
+
+  /*!
+ * \brief	Lights up a random number of "stars" MAX_STARS and increases their
+ * brightness until FF for the given colour is reached and then reduces the
+ * intensity.
+ */
+ bool neo_anim_stars(uint8_t buff_idx, bool finish_up) {
+	uint8_t channel = 0b00000001 << buff_idx;
+	if (!finish_up) {
+		for ( uint8_t star_idx = 0; star_idx < MAX_STARS; star_idx++) {
+			if (star_buffer[buff_idx][star_idx].state.status_bits.active != true) {
+				star_buffer[buff_idx][star_idx].pixel.pix = get_next_pixel_from_star_buffer(buff_idx);
+				star_buffer[buff_idx][star_idx].state.status_bits.active = true;
+				star_buffer[buff_idx][star_idx].state.status_bits.ramp_up = true;
+				star_buffer[buff_idx][star_idx].pixel.red = rand() % NEO_HUE_ADJ;
+				star_buffer[buff_idx][star_idx].pixel.green = rand() % NEO_HUE_ADJ;
+				star_buffer[buff_idx][star_idx].pixel.blue = rand() % NEO_HUE_ADJ;
+				// If they are all 0x00, then force at least one colour to a value.
+				if ( star_buffer[buff_idx][star_idx].pixel.red == 0x00 && star_buffer[buff_idx][star_idx].pixel.green == 0x00 && star_buffer[buff_idx][star_idx].pixel.blue == 0x00) {
+					star_buffer[buff_idx][star_idx].state.status_bits.active = false;
+				}
+			}
+		}
+	}
+	bool limit_reached = false;
+	for( uint8_t star_idx = 0; star_idx < MAX_STARS; star_idx++){
+		if ( star_buffer[buff_idx][star_idx].state.status_bits.active ) {
+			if( star_buffer[buff_idx][star_idx].state.status_bits.ramp_up ) {
+				limit_reached = neopixel_incPixelHue_with_limit(buffer[buff_idx], star_buffer[buff_idx][star_idx].pixel );
+				star_buffer[buff_idx][star_idx].state.status_bits.ramp_up ^= limit_reached;
+			} else {
+				limit_reached = neopixel_decrPixelHue_with_limit(buffer[buff_idx], star_buffer[buff_idx][star_idx].pixel );
+				if ( limit_reached ){
+					star_buffer[buff_idx][star_idx].state.status_bits.active = false;
+					star_buffer[buff_idx][star_idx].pixel.red = 0x00;
+					star_buffer[buff_idx][star_idx].pixel.green = 0x00;
+					star_buffer[buff_idx][star_idx].pixel.blue = 0x00;
+					neopixel_setPixel(buffer[buff_idx], star_buffer[buff_idx][star_idx].pixel.pix, 0x00, 0x00, 0x00);
+				}
+			}
+		}
+	}
+	neopixel_setchannel(channel);
+	neopixel_show(buffer[buff_idx]);
+	return neo_anim_any_active(buff_idx);
  }
 
  
